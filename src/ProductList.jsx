@@ -1,3 +1,5 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from './CartSlice';
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
@@ -5,7 +7,27 @@ function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
 
+    const dispatch = useDispatch();
+const cartItems = useSelector((state) => state.cart.items);
+const [addedToCart, setAddedToCart] = useState({});
+
+useEffect(() => {
+  setAddedToCart(
+    Object.fromEntries(cartItems.map((item) => [item.name, true]))
+  );
+}, [cartItems]);
+
+const handleAddToCart = (plant) => {
+  dispatch(addItem(plant));
+
+  setAddedToCart((previous) => ({
+    ...previous,
+    [plant.name]: true,
+  }));
+};
+
     const plantsArray = [
+        
         {
             category: "Air Purifying Plants",
             plants: [
@@ -293,9 +315,16 @@ function ProductList({ onHomeClick }) {
                           <p>{plant.description}</p>
                           <div className="product-price">{plant.cost}</div>
               
-                          <button type="button" className="product-button">
-                            Add to Cart
-                          </button>
+                          <button
+  type="button"
+  className={`product-button ${
+    addedToCart[plant.name] ? 'added-to-cart' : ''
+  }`}
+  onClick={() => handleAddToCart(plant)}
+  disabled={Boolean(addedToCart[plant.name])}
+>
+  {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
+</button>
                         </div>
                       ))}
                     </div>
