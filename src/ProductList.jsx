@@ -260,9 +260,10 @@ const handleAddToCart = (plant) => {
     }
 
     const handleHomeClick = (e) => {
-        e.preventDefault();
-        onHomeClick();
-    };
+  e.preventDefault();
+  setShowCart(false);
+  onHomeClick();
+};
 
     const handleCartClick = (e) => {
         e.preventDefault();
